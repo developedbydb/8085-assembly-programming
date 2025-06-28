@@ -1,56 +1,63 @@
 # 8085 Assembly Programming Notes
 
 ## 🔹 Registers & Memory
-| Register | Purpose          | Example Usage      | Mnemonic |
-|----------|------------------|-------------------|----------|
-| A        | Accumulator      | `ADD B`           | **A**lways the main register |
-| B, C, D  | General-purpose  | `MOV A, B`        | **B**uddy, **C**ompany, **D**ude (secondary registers) |
-| H, L     | Memory Pointer   | `LDA 2050H`       | **H**olds **L**ocation (HL points to memory) |
-| PC       | Program Counter  | Auto-increments   | **P**rogram **C**hapter (tracks current instruction) |
-| SP       | Stack Pointer    | `PUSH/POP`        | **S**tack **P**rotector |
+| Register | Bit Size | Purpose          | Example Usage      |
+|----------|---------|------------------|-------------------|
+| A        | 8-bit   | Accumulator      | `ADD B`           |
+| B, C, D, E | 8-bit | General-purpose  | `MOV A, B`        |
+| H, L     | 8-bit   | Memory Pointer   | `LDA 2050H`       |
+| PC       | 16-bit  | Program Counter  | Auto-increments   |
+| SP       | 16-bit  | Stack Pointer    | `PUSH/POP`        |
+
+**Memory Trick:** "**A Big Cat Digs Earth, Hides Little**" (A, B, C, D, E, H, L)
 
 ---
 
-## 🔹 Key Instructions
-### Data Transfer
-| Instruction | Meaning          | Mnemonic |
-|-------------|------------------|----------|
-| `MOV Rd, Rs` | Copy register | **M**ove **O**ver **V**alue |
-| `MVI R, data` | Load immediate | **M**emory **V**alue **I**mmediate |
-| `LDA addr` | Load A from memory | **L**oad **D**irect to **A**ccumulator |
-| `STA addr` | Store A to memory | **S**ave **T**o **A**ddress |
+## 🔹 Instruction Groups
 
-### Arithmetic
-| Instruction | Meaning | Mnemonic |
-|-------------|---------|----------|
-| `ADD R` | A = A + R | **A**lways **D**o **D**dition |
-| `ADI data` | A = A + data | **A**dd **D**irect **I**mmediate |
-| `SUB R` | A = A - R | **S**ubtract **U**sing **B**register |
+### A. Data Transfer Group
+| Mnemonic | Example | Meaning | Pattern |
+|----------|---------|---------|---------|
+| `MOV` | `MOV A, B` | Copy B → A | Register to Register |
+| `MVI` | `MVI A, 05H` | Load immediate → A | Immediate to Register |
+| `LDA` | `LDA 2050H` | Memory → A | Memory to Accumulator |
+| `STA` | `STA 2050H` | A → Memory | Accumulator to Memory |
 
-### Control Flow
-| Instruction | Meaning | Mnemonic |
-|-------------|---------|----------|
-| `JMP addr` | Unconditional jump | **J**ust **M**ove **P**ointer |
-| `JZ addr` | Jump if Zero=1 | **J**ump **Z**ero |
+### B. Arithmetic Group
+| Mnemonic | Example | Operation | Memory Trick |
+|----------|---------|-----------|--------------|
+| `ADD` | `ADD B` | A = A + B | **ADD**ition |
+| `ADI` | `ADI 05H` | A = A + data | **ADD** Immediate |
+| `SUB` | `SUB C` | A = A - C | **SUB**tract |
+| `INR` | `INR D` | D = D + 1 | **IN**crement |
+| `DCR` | `DCR E` | E = E - 1 | **D**e**CR**ease |
+
+### C. Logical & Complement Group
+| Mnemonic | Example | Operation | Pattern |
+|----------|---------|-----------|---------|
+| `ANA` | `ANA B` | A = A AND B | AND Accumulator |
+| `ORA` | `ORA C` | A = A OR C | OR Accumulator |
+| `XRA` | `XRA D` | A = A XOR D | XOR Accumulator |
+| `CMA` | `CMA` | A = NOT A | Complement Accumulator |
+| `CMC` | `CMC` | Toggle Carry | Complement Carry |
+
+---
+
+## 🔹 Flag Register
+| Flag | Name       | Trigger Condition | Mnemonic |
+|------|------------|-------------------|----------|
+| Z    | Zero       | Result = 0        | **Z**ero |
+| CY   | Carry      | Arithmetic overflow | **C**arr**Y** |
+| S    | Sign       | MSB=1 (Negative)  | **S**ign |
+| P    | Parity     | Even # of set bits | **P**arity |
+| AC   | Aux Carry  | Nibble overflow   | **A**ux **C**arry |
+
+**Memory Trick:** "**Zero Carries Some Problems Always**" (Z, CY, S, P, AC)
 
 ---
 
 ## 🔹 Common Output Locations
-1. **Accumulator (A)**  
-   - *Mnemonic*: **A**nswers live here  
-2. **Memory (STA 2050H)**  
-   - *Mnemonic*: **S**tored **T**reasures **A**t [address]  
-3. **Ports (OUT 01H)**  
-   - *Mnemonic*: **O**utput **U**sually **T**here  
-
----
-
-## 🔹 Flag Register (Cheat Codes)
-| Flag | Name | Mnemonic | Trigger Condition |
-|------|------|----------|-------------------|
-| Z    | Zero | **Z**ombies appear when result=0 | Result = 0 |
-| CY   | Carry | **C**arry **Y**our overflow | Arithmetic overflow |
-| S    | Sign | **S**ad when negative (MSB=1) | Negative result |
-| P    | Parity | **P**arty if even 1's | Even # of set bits |
-| AC   | Aux Carry | **A**uxiliary **C**hange | Nibble overflow |
+1. **Accumulator (A)** - Primary result storage
+2. **Memory (STA 2050H)** - Data storage
+3. **Ports (OUT 01H)** - I/O operations
 
